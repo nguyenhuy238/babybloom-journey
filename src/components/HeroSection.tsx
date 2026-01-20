@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Play, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import heroImage from "@/assets/hero-illustration.jpg";
 
 const HeroSection = () => {
@@ -47,10 +48,12 @@ const HeroSection = () => {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-              <Button size="lg" className="text-lg px-8 gap-2 group">
-                Bắt đầu miễn phí
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </Button>
+              <Link to="/app">
+                <Button size="lg" className="text-lg px-8 gap-2 group w-full sm:w-auto">
+                  Bắt đầu miễn phí
+                  <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                </Button>
+              </Link>
               <Button size="lg" variant="outline" className="text-lg px-8 gap-2">
                 <Play className="w-5 h-5" />
                 Xem video giới thiệu
