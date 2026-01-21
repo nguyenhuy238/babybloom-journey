@@ -76,6 +76,84 @@ const AppDashboard = ({ babyData }: AppDashboardProps) => {
         return <VideoLibrary />;
       case "progress":
         return <ProgressTracker babyName={babyData.name} ageMonths={ageMonths} />;
+      case "profile":
+        return (
+          <div className="space-y-6">
+            {/* Profile Header */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-center"
+            >
+              <div className="w-24 h-24 mx-auto bg-gradient-to-br from-primary to-terracotta rounded-full flex items-center justify-center text-5xl mb-4">
+                👶
+              </div>
+              <h2 className="text-2xl font-bold">{babyData.name}</h2>
+              <p className="text-muted-foreground">{ageMonths} tháng tuổi</p>
+            </motion.div>
+
+            {/* Goals */}
+            <div className="bg-card rounded-xl p-4 border border-border">
+              <h3 className="font-semibold mb-3">Mục tiêu phát triển</h3>
+              <div className="flex flex-wrap gap-2">
+                {babyData.goals.map(goal => {
+                  const goalInfo: Record<string, { emoji: string; label: string }> = {
+                    iq: { emoji: "🧠", label: "Trí tuệ" },
+                    eq: { emoji: "💝", label: "Cảm xúc" },
+                    physical: { emoji: "🏃", label: "Thể chất" },
+                    sensory: { emoji: "👀", label: "Giác quan" },
+                    independence: { emoji: "🌱", label: "Tự lập" },
+                  };
+                  return (
+                    <span key={goal} className="bg-primary/10 text-primary px-3 py-1.5 rounded-full text-sm font-medium">
+                      {goalInfo[goal]?.emoji} {goalInfo[goal]?.label}
+                    </span>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Stats */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-card rounded-xl p-4 border border-border text-center">
+                <div className="text-3xl font-bold text-sage-dark">28</div>
+                <div className="text-sm text-muted-foreground">Hoạt động hoàn thành</div>
+              </div>
+              <div className="bg-card rounded-xl p-4 border border-border text-center">
+                <div className="text-3xl font-bold text-primary">12</div>
+                <div className="text-sm text-muted-foreground">Ngày liên tiếp</div>
+              </div>
+              <div className="bg-card rounded-xl p-4 border border-border text-center">
+                <div className="text-3xl font-bold text-sunny">15</div>
+                <div className="text-sm text-muted-foreground">Video đã xem</div>
+              </div>
+              <div className="bg-card rounded-xl p-4 border border-border text-center">
+                <div className="text-3xl font-bold text-terracotta">8</div>
+                <div className="text-sm text-muted-foreground">Cột mốc đạt được</div>
+              </div>
+            </div>
+
+            {/* Settings */}
+            <div className="bg-card rounded-xl border border-border overflow-hidden">
+              <button className="w-full p-4 text-left hover:bg-muted/50 transition-colors border-b border-border flex items-center justify-between">
+                <span>Chỉnh sửa hồ sơ bé</span>
+                <ChevronRight className="w-5 h-5 text-muted-foreground" />
+              </button>
+              <button className="w-full p-4 text-left hover:bg-muted/50 transition-colors border-b border-border flex items-center justify-between">
+                <span>Cài đặt thông báo</span>
+                <ChevronRight className="w-5 h-5 text-muted-foreground" />
+              </button>
+              <button className="w-full p-4 text-left hover:bg-muted/50 transition-colors border-b border-border flex items-center justify-between">
+                <span>Nâng cấp Premium</span>
+                <span className="bg-sunny text-xs px-2 py-0.5 rounded-full font-medium">HOT</span>
+              </button>
+              <button className="w-full p-4 text-left hover:bg-muted/50 transition-colors flex items-center justify-between">
+                <span>Hỗ trợ & Phản hồi</span>
+                <ChevronRight className="w-5 h-5 text-muted-foreground" />
+              </button>
+            </div>
+          </div>
+        );
       default:
         return (
           <div className="space-y-6">
