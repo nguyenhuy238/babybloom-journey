@@ -25,6 +25,9 @@ const videos = [
     rating: 4.8,
     views: "12.5K",
     isPremium: false,
+    description: "Hướng dẫn bố mẹ cách chơi lăn bóng với bé để phát triển kỹ năng vận động thô và phối hợp tay-mắt.",
+    steps: ["Chọn bóng mềm, kích thước vừa tay bé", "Ngồi đối diện với bé, cách khoảng 1m", "Lăn nhẹ bóng về phía bé", "Khuyến khích bé đẩy bóng lại"],
+    tips: "Nên chơi trên sàn phẳng, êm. Thời gian chơi 5-10 phút mỗi lần.",
   },
   {
     id: 2,
@@ -37,6 +40,9 @@ const videos = [
     rating: 4.9,
     views: "28.3K",
     isPremium: false,
+    description: "Cách kể chuyện tương tác giúp bé phát triển ngôn ngữ, trí tưởng tượng và khả năng tập trung.",
+    steps: ["Chọn sách tranh có hình minh họa rõ ràng", "Đọc với giọng điệu sinh động", "Dừng lại hỏi bé về nhân vật", "Để bé lật trang và chỉ vào hình"],
+    tips: "Đọc cùng một câu chuyện nhiều lần giúp bé ghi nhớ và dự đoán nội dung.",
   },
   {
     id: 3,
@@ -49,6 +55,9 @@ const videos = [
     rating: 4.7,
     views: "18.9K",
     isPremium: true,
+    description: "Kỹ thuật massage nhẹ nhàng giúp bé thư giãn, ngủ ngon và tăng cường gắn kết với bố mẹ.",
+    steps: ["Chuẩn bị dầu massage dành cho bé", "Bắt đầu từ chân, massage nhẹ nhàng", "Di chuyển lên bụng, ngực, tay", "Kết thúc với động tác vuốt nhẹ mặt"],
+    tips: "Massage 10-15 phút trước giờ ngủ sẽ giúp bé thư giãn hơn.",
   },
   {
     id: 4,
@@ -61,6 +70,9 @@ const videos = [
     rating: 4.6,
     views: "9.2K",
     isPremium: false,
+    description: "Giới thiệu các đồ chơi Montessori kích thích giác quan và cách sử dụng hiệu quả.",
+    steps: ["Chuẩn bị 3-4 loại đồ chơi khác chất liệu", "Đưa từng món cho bé khám phá", "Mô tả cảm giác: 'Mềm', 'Cứng', 'Lạnh'", "Cho bé thời gian tự do khám phá"],
+    tips: "Không cần đồ chơi đắt tiền, đồ vật an toàn trong nhà cũng rất phù hợp.",
   },
   {
     id: 5,
@@ -73,6 +85,9 @@ const videos = [
     rating: 4.9,
     views: "45.1K",
     isPremium: true,
+    description: "Phương pháp Montessori giúp bé học cách tự ăn, phát triển sự độc lập và kỹ năng vận động tinh.",
+    steps: ["Chuẩn bị ghế ăn phù hợp chiều cao", "Dùng bát và thìa kích thước bé", "Để bé tự cầm thìa và xúc", "Kiên nhẫn khi bé làm đổ"],
+    tips: "Bắt đầu với thức ăn dễ xúc như cháo đặc hoặc khoai tây nghiền.",
   },
   {
     id: 6,
@@ -85,6 +100,9 @@ const videos = [
     rating: 4.8,
     views: "33.7K",
     isPremium: false,
+    description: "Hướng dẫn tummy time đúng cách để bé phát triển cơ cổ, lưng và chuẩn bị cho việc lẫy, bò.",
+    steps: ["Đặt bé nằm sấp trên thảm mềm", "Đặt đồ chơi trước mặt để thu hút", "Bắt đầu với 1-2 phút", "Tăng dần thời gian mỗi ngày"],
+    tips: "Thực hiện sau khi bé thức dậy, tránh sau bữa ăn.",
   },
   {
     id: 7,
@@ -97,6 +115,9 @@ const videos = [
     rating: 4.5,
     views: "15.8K",
     isPremium: false,
+    description: "Cách dạy bé nhận biết màu sắc cơ bản thông qua đồ vật và trò chơi hàng ngày.",
+    steps: ["Bắt đầu với 2 màu đối lập (đỏ-xanh)", "Chọn đồ vật cùng màu gom lại", "Gọi tên màu nhiều lần trong ngày", "Chơi trò 'Tìm màu...'"],
+    tips: "Kiên nhẫn, bé cần thời gian để ghi nhớ và phân biệt màu sắc.",
   },
   {
     id: 8,
@@ -109,6 +130,9 @@ const videos = [
     rating: 4.9,
     views: "52.4K",
     isPremium: true,
+    description: "Cách hiểu và phản hồi đúng khi bé khóc, giúp xây dựng sự tin tưởng và gắn kết an toàn.",
+    steps: ["Bình tĩnh khi bé khóc", "Kiểm tra các nhu cầu cơ bản", "Ôm bé và nói chuyện nhẹ nhàng", "Quan sát ngôn ngữ cơ thể của bé"],
+    tips: "Phản hồi nhanh và nhất quán giúp bé cảm thấy an toàn.",
   },
 ];
 
@@ -229,7 +253,7 @@ const VideoLibrary = () => {
             animate={{ y: 0 }}
             exit={{ y: 100 }}
             onClick={(e) => e.stopPropagation()}
-            className="bg-card rounded-2xl overflow-hidden w-full max-w-lg"
+            className="bg-card rounded-2xl overflow-hidden w-full max-w-lg max-h-[90vh] overflow-y-auto"
           >
             {/* Video Player Placeholder */}
             <div className={`aspect-video bg-gradient-to-br ${selectedVideo.color} flex items-center justify-center relative`}>
@@ -242,26 +266,54 @@ const VideoLibrary = () => {
             </div>
 
             {/* Content */}
-            <div className="p-6">
-              <h3 className="text-xl font-bold mb-2">{selectedVideo.title}</h3>
-              <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
-                <span className="flex items-center gap-1">
-                  <Clock className="w-4 h-4" />
-                  {selectedVideo.duration}
-                </span>
-                <span>{selectedVideo.age}</span>
-                <span className="flex items-center gap-1">
-                  <Star className="w-4 h-4 text-sunny fill-sunny" />
-                  {selectedVideo.rating}
-                </span>
+            <div className="p-6 space-y-4">
+              <div>
+                <h3 className="text-xl font-bold mb-2">{selectedVideo.title}</h3>
+                <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                  <span className="flex items-center gap-1">
+                    <Clock className="w-4 h-4" />
+                    {selectedVideo.duration}
+                  </span>
+                  <span>{selectedVideo.age}</span>
+                  <span className="flex items-center gap-1">
+                    <Star className="w-4 h-4 text-sunny fill-sunny" />
+                    {selectedVideo.rating}
+                  </span>
+                </div>
               </div>
 
-              <p className="text-muted-foreground mb-6">
-                Hướng dẫn chi tiết cách thực hiện hoạt động này cùng bé tại nhà. 
-                Video được thiết kế ngắn gọn, dễ làm theo với các bước rõ ràng.
+              <p className="text-muted-foreground text-sm">
+                {selectedVideo.description}
               </p>
 
-              <div className="flex gap-3">
+              {/* Steps */}
+              {selectedVideo.steps && (
+                <div>
+                  <h4 className="font-semibold mb-3">Các bước thực hiện</h4>
+                  <ol className="space-y-2">
+                    {selectedVideo.steps.map((step, i) => (
+                      <li key={i} className="flex gap-3 text-sm">
+                        <span className="w-6 h-6 bg-primary/10 text-primary rounded-full flex items-center justify-center flex-shrink-0 text-xs font-medium">
+                          {i + 1}
+                        </span>
+                        <span>{step}</span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+              )}
+
+              {/* Tips */}
+              {selectedVideo.tips && (
+                <div className="bg-sunny/10 p-4 rounded-xl">
+                  <h4 className="font-semibold mb-2 flex items-center gap-2">
+                    💡 Mẹo hay
+                  </h4>
+                  <p className="text-sm text-muted-foreground">{selectedVideo.tips}</p>
+                </div>
+              )}
+
+              <div className="flex gap-3 pt-2">
                 <Button className="flex-1 gap-2">
                   <Play className="w-4 h-4" />
                   Xem video
