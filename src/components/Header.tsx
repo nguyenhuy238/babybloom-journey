@@ -7,12 +7,13 @@ import CartDrawer from "@/components/shop/CartDrawer";
 import { useCartStore } from "@/lib/store";
 
 const navItems = [
-  { label: "Trang chủ", href: "#hero" },
-  { label: "Tính năng", href: "#features" },
-  { label: "Phương pháp", href: "#pillars" },
+  { label: "Trang chủ", href: "/", isRoute: true },
+  { label: "Về chúng tôi", href: "/about", isRoute: true },
+  { label: "Học thử", href: "/trial", isRoute: true },
+  { label: "Khóa học", href: "/courses", isRoute: true },
   { label: "Cửa hàng", href: "/shop", isRoute: true },
-  { label: "Bảng giá", href: "#pricing" },
-  { label: "Hỗ trợ", href: "#faq" },
+  { label: "Kiến thức", href: "/blog", isRoute: true },
+  { label: "Hỗ trợ", href: "/support", isRoute: true },
 ];
 
 const Header = () => {
