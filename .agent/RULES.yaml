@@ -1,0 +1,453 @@
+# ============================================================
+# BABYFIRST – AI AGENT & SYSTEM RULES
+# ============================================================
+# This file MUST be read and strictly followed by the AI Agent
+# before performing any system development or code implementation.
+# Created: 2026-01-27
+# ============================================================
+
+metadata:
+  project_name: BabyFirst
+  type: Educational Web Application
+  target_users: Learners (children, parents)
+  philosophy: "Develop slowly – but correctly – and with scalability in mind"
+
+# ============================================================
+# I. SYSTEM POSITIONING RULES
+# ============================================================
+system_positioning:
+  R1_web_application:
+    title: "BabyFirst is a Web Application, not a Website"
+    required:
+      - business_logic: true
+      - user_state: true
+      - api_backend: true
+      - authentication: true
+      - authorization: true
+    forbidden:
+      - static_content_only: "Must not be purely static content like a landing page"
+    impact: "All technical decisions (deployment, security, caching, CI/CD) must follow Web Application thinking"
+
+  R2_enterprise_architecture:
+    title: "Enterprise-ready architecture"
+    layers:
+      - frontend
+      - backend
+      - database
+    capabilities:
+      - scale_independently: true
+      - replaceable_technology: true
+      - ai_agent_integration: true
+
+# ============================================================
+# II. ARCHITECTURE RULES
+# ============================================================
+architecture:
+  R3_frontend_responsibilities:
+    title: "Frontend has limited responsibilities"
+    allowed:
+      - display_ui_ux: true
+      - basic_validation: true
+      - call_api: true
+    forbidden:
+      - complex_business_logic: "MUST NOT handle complex business logic"
+      - direct_db_access: "Must not access the database directly"
+    technology:
+      framework: "React"
+      language: "TypeScript"
+      build_tool: "Vite"
+      ui_library: "shadcn/ui"
+
+  R4_backend_single_source_of_truth:
+    title: "Backend is the Single Source of Truth"
+    principles:
+      - all_business_rules_in_backend: true
+      - frontend_no_logic_inference: true
+    response_format:
+      required_fields:
+        - status
+        - message
+        - error_code
+
+  R5_rest_api_standards:
+    title: "API must follow REST standards"
+    requirements:
+      - stateless: true
+      - proper_http_status_codes: true
+      - json_request_response: true
+      - api_versioning: "/api/v1/..."
+
+  R6_database_storage_only:
+    title: "Database is a pure storage layer"
+    forbidden:
+      - complex_business_logic_in_db: true
+      - trigger_as_backend_replacement: true
+    orm: "Entity Framework Core"
+
+# ============================================================
+# III. DEVELOPMENT & DEPLOYMENT RULES
+# ============================================================
+development_deployment:
+  R7_environment_separation:
+    title: "Clear separation of environments"
+    environments:
+      - development
+      - production
+    config:
+      pattern: "appsettings.{Environment}.json"
+      forbidden:
+        - hardcoded_connection_string: true
+
+  R8_build_once_deploy_many:
+    title: "Deploy using Build Once – Deploy Many principle"
+    process:
+      - rebuild_on_update: true
+      - create_new_artifact: true
+    forbidden:
+      - edit_code_on_server: true
+
+  R9_feature_expansion:
+    title: "Safe feature expansion"
+    principles:
+      - no_direct_edit_without_impact_assessment: true
+      - prefer_extension_over_modification: true
+      - prefer_adding_layers: true
+      - prefer_adding_services: true
+    forbidden:
+      - "tear down and rebuild everything"
+
+# ============================================================
+# IV. SECURITY RULES
+# ============================================================
+security:
+  R10_authentication_required:
+    title: "Authentication is mandatory for business APIs"
+    methods:
+      - JWT
+      - Identity
+    forbidden:
+      - open_api_without_explicit_definition: true
+
+  R11_authorization_backend:
+    title: "Authorization must be enforced in the Backend"
+    principles:
+      - backend_always_checks_permission: true
+    forbidden:
+      - frontend_only_permission_check: true
+
+  R12_no_sensitive_data_exposure:
+    title: "No sensitive data exposure"
+    forbidden:
+      - stack_trace_to_client: true
+      - log_password: true
+      - log_token: true
+      - commit_env_file: true
+      - commit_secrets: true
+
+# ============================================================
+# V. AI AGENT CORE RULES (CRITICAL)
+# ============================================================
+ai_agent_core:
+  priority: CRITICAL
+
+  R13_ai_agent_forbidden_actions:
+    title: "AI Agent MUST NOT do the following"
+    forbidden:
+      - direct_database_write: "Must not write directly to the database"
+      - modify_system_data_without_permission: "Must not modify system data arbitrarily"
+      - bypass_authentication: "Must not bypass authentication"
+    requirement: "AI Agent may operate only through authorized APIs"
+
+  R14_ai_agent_role:
+    title: "AI Agent operates as an Advisor / Assistant"
+    allowed:
+      - suggest: true
+      - analyze: true
+      - explain: true
+      - propose_actions: true
+      - implement_code: true
+    forbidden:
+      - auto_execute_destructive_actions: "Must not automatically execute destructive actions"
+
+  R15_respect_business_rules:
+    title: "AI Agent must respect Business Rules"
+    principles:
+      - no_inference_beyond_defined_rules: true
+      - request_more_data_if_missing: true
+      - system_rules_priority_on_conflict: true
+
+  R16_explain_decisions:
+    title: "AI Agent must always explain its decisions"
+    required_in_proposals:
+      - reason: "Rationale for the proposal"
+      - data_used: "Data used"
+      - limitations: "Limitations of the conclusion"
+    forbidden:
+      - "AI acting as an unquestionable authority"
+
+# ============================================================
+# VI. SCALABILITY & MAINTAINABILITY RULES
+# ============================================================
+scalability_maintainability:
+  R17_open_design:
+    title: "Open and extensible design"
+    extensible_with:
+      - microservices: true
+      - additional_ai_agents: true
+      - external_apis: true
+
+  R18_readability_first:
+    title: "Code readability comes before optimization"
+    priorities:
+      - clarity: 1
+      - layer_separation: 2
+      - proper_naming: 3
+
+  R19_documentation_is_required:
+    title: "Documentation is part of the system"
+    required:
+      - swagger_for_api: true
+      - readme_for_repo: true
+      - rule_file_for_ai_agent: true
+    mindset: "Documentation is not optional"
+
+# ============================================================
+# VII. CORE PHILOSOPHY RULES
+# ============================================================
+core_philosophy:
+  R20_development_mindset:
+    title: "BabyFirst development mindset"
+    motto: "Develop slowly – but correctly – and with scalability in mind"
+    forbidden:
+      - temporary_hacks: true
+      - premature_optimization: true
+      - single_technology_dependency: true
+
+  R21_education_first:
+    title: "BabyFirst is an education-first platform"
+    principle: "All technical decisions must serve learners"
+    never_trade:
+      - user_experience
+      - understandability
+      - friendliness
+    for: "technical optimization"
+
+  R22_user_friendly_interface:
+    title: "Interfaces and system behavior must be user-friendly"
+    error_messages:
+      required:
+        - clear: true
+        - guiding: true
+      forbidden:
+        - causing_panic: true
+        - technical_jargon: true
+        - vague_messages: "Something went wrong"
+    applies_to:
+      - ui
+      - api_messages
+      - ai_agent_responses
+
+  R23_no_pressure_on_learners:
+    title: "The system must not create pressure for learners"
+    forbidden_design:
+      - stress_inducing: true
+      - judgmental_scoring: true
+    ai_agent_requirements:
+      - encouraging_suggestions: true
+      - positive_language: true
+    forbidden:
+      - negative_language: true
+
+# ============================================================
+# VIII. PROFESSIONAL DEVELOPMENT RULES
+# ============================================================
+professional_development:
+  R24_team_first_development:
+    title: "Team-first development approach"
+    code_requirements:
+      - readable_by_others: true
+      - modifiable_by_others: true
+    forbidden_mindset:
+      - "only I understand this"
+      - "just get it done"
+
+  R25_clear_folder_structure:
+    title: "Clear and consistent folder structure"
+    principle: "Each layer has its own responsibility"
+    forbidden:
+      - mixing_domain_infrastructure_presentation: true
+    note: "AI Agent must also follow this when generating code"
+
+  R26_naming_convention:
+    title: "Naming conventions are mandatory"
+    applies_to:
+      - class
+      - function
+      - variable
+      - api_endpoint
+    requirements:
+      - semantic_correctness: true
+      - consistency: true
+    forbidden:
+      - confusing_abbreviations: true
+
+  R27_comments_and_docs:
+    title: "All critical logic must be commented or documented"
+    especially_for:
+      - educational_business_logic
+      - evaluation_rules
+      - learning_flow
+    principle: "Code without explanation is incomplete code"
+
+# ============================================================
+# IX. NON-FUNCTIONAL REQUIREMENTS (NFR)
+# ============================================================
+non_functional_requirements:
+  priority: MANDATORY  # NFRs are hard rules, not optional
+
+  R28_performance:
+    title: "Performance"
+    api_response_time:
+      target: "< 500ms"
+      scope: internal
+    ui_requirements:
+      - no_blocking: true
+      - clear_loading_states: true
+    ai_agent_requirements:
+      - no_unnecessary_verbose_responses: true
+      - prefer_structured_responses: true
+
+  R29_scalability:
+    title: "Scalability"
+    design_for:
+      - increasing_learners: true
+      - increasing_courses: true
+      - increasing_ai_agents: true
+    forbidden:
+      - hardcoded_limits: true
+
+  R30_reliability:
+    title: "Availability & reliability"
+    requirements:
+      - controlled_error_handling: true
+      - no_cascade_crashes: true
+    mechanisms:
+      - retry: true
+      - timeout: true
+      - fallback: true
+
+  R31_maintainability:
+    title: "Maintainability"
+    requirements:
+      - easy_to_fix: true
+      - easy_to_test: true
+      - easy_to_extend: true
+    principle: "Prefer proper refactoring over patching fixes"
+
+  R32_educational_security:
+    title: "Educational security"
+    protect:
+      - student_data: true
+      - learning_progress: true
+    forbidden:
+      - ai_personal_judgment_abuse: true
+      - negative_labeling: true
+
+  R33_consistency:
+    title: "Consistency"
+    same_across:
+      - ui
+      - api
+      - ai_agent
+    elements:
+      - terminology
+      - concepts
+      - logic_flow
+    forbidden: "AI says one thing while the system behaves differently"
+
+# ============================================================
+# X. AI AGENT IN EDUCATION RULES
+# ============================================================
+ai_agent_education:
+  R34_ai_as_tutor:
+    title: "AI Agent is a Tutor – not a Judge"
+    allowed:
+      - guide: true
+      - explain: true
+      - inspire: true
+    forbidden:
+      - judge: true
+      - impose: true
+
+  R35_prefer_simplicity:
+    title: "AI Agent must prioritize simplicity over complexity"
+    principle: "If multiple explanations exist → choose the one appropriate to the learner’s level"
+
+  R36_honesty_when_uncertain:
+    title: "When uncertain → AI Agent must say so"
+    forbidden:
+      - random_guessing: true
+      - answering_for_the_sake_of_it: true
+    required:
+      - encourage_learner_to_ask_more: true
+
+# ============================================================
+# COMPLIANCE CHECKLIST FOR AI AGENT
+# ============================================================
+compliance_checklist:
+  before_implementing_code:
+    - check: "Is the code placed in the correct layer?"
+      rules: [R3, R4, R25]
+
+    - check: "Is business logic incorrectly implemented in the Frontend?"
+      rules: [R3, R4]
+
+    - check: "Does the API comply with REST standards?"
+      rules: [R5]
+
+    - check: "Is any config or connection string hard-coded?"
+      rules: [R7]
+
+    - check: "Are authentication and authorization handled correctly?"
+      rules: [R10, R11]
+
+    - check: "Is any sensitive information exposed?"
+      rules: [R12]
+
+    - check: "Are naming conventions consistent?"
+      rules: [R26]
+
+    - check: "Are critical logic sections documented or commented?"
+      rules: [R27]
+
+    - check: "Are error handling and fallbacks implemented?"
+      rules: [R30]
+
+    - check: "Is the code easy to read and understand?"
+      rules: [R18, R24]
+
+# ============================================================
+# QUICK REFERENCE
+# ============================================================
+quick_reference:
+  frontend_tech:
+    - React
+    - TypeScript
+    - Vite
+    - shadcn/ui
+
+  backend_tech:
+    - "Entity Framework Core"
+    - "REST API"
+    - "JWT Authentication"
+
+  ai_agent_role: "Advisor / Assistant / Tutor – NOT Judge"
+
+  core_principle: "Develop slowly – but correctly – and with scalability in mind"
+
+  golden_rules:
+    - "Frontend must not handle business logic"
+    - "Backend is the Single Source of Truth"
+    - "AI Agent may operate only through APIs"
+    - "Learners come before technical optimization"
+    - "Readable code is more important than early optimization"
