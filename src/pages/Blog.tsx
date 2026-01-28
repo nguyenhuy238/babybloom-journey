@@ -7,6 +7,9 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/lib/api-client";
+import { Loader2 } from "lucide-react";
 
 interface BlogPost {
   id: string;
@@ -32,79 +35,32 @@ const categories = [
   { id: "nutrition", label: "Dinh dưỡng", emoji: "🥗" },
 ];
 
-const blogPosts: BlogPost[] = [
-  {
-    id: "1",
-    title: "5 hoạt động vận động thô đơn giản cho bé 6-12 tháng",
-    excerpt: "Những hoạt động giúp bé phát triển cơ bắp, khả năng giữ thăng bằng và chuẩn bị cho giai đoạn tập đi.",
-    content: "Nội dung chi tiết về các hoạt động vận động thô...",
-    category: "motor",
-    readTime: "5 phút",
-    date: "2024-01-15",
-    thumbnail: "🏃",
-    author: { name: "Dr. Mai Anh", avatar: "👩‍⚕️" },
-  },
-  {
-    id: "2",
-    title: "Cách xây dựng sự gắn kết an toàn với bé sơ sinh",
-    excerpt: "Attachment parenting - Phương pháp nuôi dạy con giúp bé phát triển cảm xúc lành mạnh từ những ngày đầu.",
-    content: "Nội dung chi tiết về attachment parenting...",
-    category: "emotional",
-    readTime: "7 phút",
-    date: "2024-01-12",
-    thumbnail: "💝",
-    author: { name: "ThS. Hương Giang", avatar: "👩‍🏫" },
-  },
-  {
-    id: "3",
-    title: "Thai giáo âm nhạc: Bắt đầu từ tuần thứ mấy?",
-    excerpt: "Tìm hiểu thời điểm vàng để bắt đầu thai giáo âm nhạc và những lợi ích khoa học đã được chứng minh.",
-    content: "Nội dung chi tiết về thai giáo âm nhạc...",
-    category: "prenatal",
-    readTime: "6 phút",
-    date: "2024-01-10",
-    thumbnail: "🎵",
-    author: { name: "Dr. Mai Anh", avatar: "👩‍⚕️" },
-  },
-  {
-    id: "4",
-    title: "Montessori tại nhà: 10 nguyên tắc cơ bản cho cha mẹ",
-    excerpt: "Áp dụng phương pháp Montessori không cần lớp học đắt tiền - bắt đầu từ những thay đổi nhỏ trong nhà.",
-    content: "Nội dung chi tiết về Montessori tại nhà...",
-    category: "cognitive",
-    readTime: "8 phút",
-    date: "2024-01-08",
-    thumbnail: "🧠",
-    author: { name: "Cô Thanh Hà", avatar: "👩‍🎓" },
-  },
-  {
-    id: "5",
-    title: "Dinh dưỡng cho não bộ: Thực đơn cho bé 1-2 tuổi",
-    excerpt: "Những thực phẩm giàu DHA, Omega-3 và cách chế biến hấp dẫn để bé ăn ngon, não phát triển tốt.",
-    content: "Nội dung chi tiết về dinh dưỡng...",
-    category: "nutrition",
-    readTime: "6 phút",
-    date: "2024-01-05",
-    thumbnail: "🥗",
-    author: { name: "BS. Minh Châu", avatar: "👨‍⚕️" },
-  },
-  {
-    id: "6",
-    title: "Xử lý khi bé ăn vạ: 7 bước kỷ luật tích cực",
-    excerpt: "Không la mắng, không đánh đòn - cách giúp bé học cách quản lý cảm xúc từ những cơn ăn vạ.",
-    content: "Nội dung chi tiết về xử lý ăn vạ...",
-    category: "emotional",
-    readTime: "5 phút",
-    date: "2024-01-03",
-    thumbnail: "💝",
-    author: { name: "ThS. Hương Giang", avatar: "👩‍🏫" },
-  },
-];
-
 const Blog = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("all");
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
+
+  const { data: apiResponse, isLoading } = useQuery({
+    queryKey: ["blogs", activeCategory],
+    queryFn: () => api.get<{ data: any[] }>(`/v1/blogs${activeCategory !== "all" ? `?category=${activeCategory}` : ""}`),
+  });
+
+  const apiBlogs = apiResponse?.data || [];
+
+  const blogPosts: BlogPost[] = apiBlogs.map(b => ({
+    id: b.id,
+    title: b.title,
+    excerpt: b.excerpt,
+    content: b.content,
+    category: b.category,
+    readTime: b.readTime,
+    date: b.publishedAt,
+    thumbnail: b.thumbnailUrl,
+    author: {
+      name: b.authorName,
+      avatar: b.authorAvatar
+    }
+  }));
 
   const filteredPosts = blogPosts.filter((post) => {
     const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -181,7 +137,11 @@ const Blog = () => {
         {/* Posts Grid */}
         <section className="py-12">
           <div className="container mx-auto px-4">
-            {filteredPosts.length === 0 ? (
+            {isLoading ? (
+              <div className="flex justify-center py-20">
+                <Loader2 className="w-10 h-10 animate-spin text-primary" />
+              </div>
+            ) : filteredPosts.length === 0 ? (
               <div className="text-center py-12">
                 <p className="text-muted-foreground">Không tìm thấy bài viết nào</p>
               </div>
@@ -290,13 +250,13 @@ const Blog = () => {
                 {selectedPost?.content}
               </p>
               <p className="text-muted-foreground">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor 
-                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud 
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+                incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
                 exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
               </p>
               <p className="text-muted-foreground">
-                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu 
-                fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in 
+                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
+                fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
                 culpa qui officia deserunt mollit anim id est laborum.
               </p>
             </div>
