@@ -1,0 +1,41 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: babyfirst-db
+    environment:
+      POSTGRES_DB: BabyFirstDb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: your_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: babyfirst-api
+    environment:
+      - ConnectionStrings__PostgresConnection=Host=db;Database=BabyFirstDb;Username=postgres;Password=huycho123
+      - DatabaseProvider=${DatabaseProvider:-Postgres}
+      - Jwt__Key=${Jwt__Key}
+      - Jwt__Issuer=${Jwt__Issuer:-BabyFirst}
+      - Jwt__Audience=${Jwt__Audience:-BabyFirstApp}
+    ports:
+      - "5000:80"
+    depends_on:
+      - db
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: babyfirst-web
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+
+volumes:
+  pg-data:

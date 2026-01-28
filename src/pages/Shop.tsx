@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { 
+import {
   ArrowLeft, Search, Filter, ShoppingCart, SlidersHorizontal,
   Grid3X3, List, ChevronDown
 } from "lucide-react";
@@ -11,16 +11,11 @@ import { Badge } from "@/components/ui/badge";
 import ProductCard from "@/components/shop/ProductCard";
 import ProductQuickView from "@/components/shop/ProductQuickView";
 import CartDrawer from "@/components/shop/CartDrawer";
-import { Product, demoProducts, useCartStore } from "@/lib/store";
+import { Product, useCartStore } from "@/lib/store";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/lib/api-client";
+import { Loader2 } from "lucide-react";
 
-const categories = [
-  { id: 'all', label: 'Tất cả', count: demoProducts.length },
-  { id: 'sensory', label: 'Giác quan', count: demoProducts.filter(p => p.developmentArea.includes('sensory')).length },
-  { id: 'physical', label: 'Vận động', count: demoProducts.filter(p => p.developmentArea.includes('physical')).length },
-  { id: 'iq', label: 'Trí tuệ', count: demoProducts.filter(p => p.developmentArea.includes('iq')).length },
-  { id: 'independence', label: 'Tự lập', count: demoProducts.filter(p => p.developmentArea.includes('independence')).length },
-  { id: 'eq', label: 'Cảm xúc', count: demoProducts.filter(p => p.developmentArea.includes('eq')).length },
-];
 
 const ageFilters = [
   { id: 'all', label: 'Tất cả độ tuổi' },
@@ -48,11 +43,44 @@ const Shop = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
 
+  const { data: apiResponse, isLoading } = useQuery({
+    queryKey: ["products"],
+    queryFn: () => api.get<{ data: any[] }>("/v1/products"),
+  });
+
+  const apiProducts = apiResponse?.data || [];
+
+  const products: Product[] = apiProducts.map(p => ({
+    id: p.id,
+    name: p.name,
+    price: p.price,
+    originalPrice: p.originalPrice,
+    image: p.thumbnailUrl, // Mapping thumbnailUrl to image
+    description: p.description,
+    category: p.category,
+    ageRange: p.ageRange || "0-3 tuổi", // Adding ageRange
+    rating: p.rating,
+    reviewCount: p.reviewCount,
+    developmentArea: p.developmentAreas || [],
+    type: (p.productType as 'affiliate' | 'direct' | 'babyfirst') || 'babyfirst', // Mapping productType to type
+    inStock: p.stockCount > 0, // Adding inStock
+    affiliateUrl: p.affiliateUrl
+  }));
+
+  const categories = [
+    { id: 'all', label: 'Tất cả', count: products.length },
+    { id: 'wooden', label: 'Giác quan/Gỗ', count: products.filter(p => p.category === 'wooden' || p.developmentArea.includes('sensory')).length },
+    { id: 'physical', label: 'Vận động', count: products.filter(p => p.category === 'physical' || p.developmentArea.includes('physical')).length },
+    { id: 'iq', label: 'Trí tuệ', count: products.filter(p => p.developmentArea.includes('iq')).length },
+    { id: 'eq', label: 'Cảm xúc', count: products.filter(p => p.developmentArea.includes('eq')).length },
+  ];
+
   const cartItems = useCartStore((state) => state.getTotalItems());
 
   // Filter and sort products
-  let filteredProducts = demoProducts.filter(product => {
-    const matchesCategory = selectedCategory === 'all' || 
+  let filteredProducts = products.filter(product => {
+    const matchesCategory = selectedCategory === 'all' ||
+      product.category === selectedCategory ||
       product.developmentArea.includes(selectedCategory);
     const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       product.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -68,6 +96,14 @@ const Shop = () => {
       default: return b.reviewCount - a.reviewCount;
     }
   });
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Loader2 className="w-10 h-10 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -88,7 +124,7 @@ const Shop = () => {
                 </p>
               </div>
             </div>
-            
+
             <Button
               variant="outline"
               className="relative"
@@ -139,16 +175,14 @@ const Shop = () => {
                     <button
                       key={cat.id}
                       onClick={() => setSelectedCategory(cat.id)}
-                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${
-                        selectedCategory === cat.id
-                          ? 'bg-primary text-primary-foreground'
-                          : 'hover:bg-muted'
-                      }`}
+                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition-colors ${selectedCategory === cat.id
+                        ? 'bg-primary text-primary-foreground'
+                        : 'hover:bg-muted'
+                        }`}
                     >
                       <span>{cat.label}</span>
-                      <span className={`text-xs ${
-                        selectedCategory === cat.id ? 'text-primary-foreground/70' : 'text-muted-foreground'
-                      }`}>
+                      <span className={`text-xs ${selectedCategory === cat.id ? 'text-primary-foreground/70' : 'text-muted-foreground'
+                        }`}>
                         {cat.count}
                       </span>
                     </button>
@@ -164,11 +198,10 @@ const Shop = () => {
                     <button
                       key={age.id}
                       onClick={() => setSelectedAge(age.id)}
-                      className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
-                        selectedAge === age.id
-                          ? 'bg-primary text-primary-foreground'
-                          : 'hover:bg-muted'
-                      }`}
+                      className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${selectedAge === age.id
+                        ? 'bg-primary text-primary-foreground'
+                        : 'hover:bg-muted'
+                        }`}
                     >
                       {age.label}
                     </button>
@@ -274,11 +307,10 @@ const Shop = () => {
 
             {/* Products grid */}
             {filteredProducts.length > 0 ? (
-              <div className={`grid gap-6 ${
-                viewMode === 'grid' 
-                  ? 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-3' 
-                  : 'grid-cols-1'
-              }`}>
+              <div className={`grid gap-6 ${viewMode === 'grid'
+                ? 'grid-cols-1 sm:grid-cols-2 xl:grid-cols-3'
+                : 'grid-cols-1'
+                }`}>
                 {filteredProducts.map((product, index) => (
                   <motion.div
                     key={product.id}

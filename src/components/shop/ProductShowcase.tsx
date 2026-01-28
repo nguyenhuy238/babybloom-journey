@@ -5,8 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import ProductCard from "./ProductCard";
 import ProductQuickView from "./ProductQuickView";
-import { Product, demoProducts } from "@/lib/store";
+import { Product } from "@/lib/store";
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/lib/api-client";
+import { Loader2 } from "lucide-react";
 
 const categories = [
   { id: 'all', label: 'Tất cả', emoji: '🎁' },
@@ -20,9 +23,33 @@ const ProductShowcase = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
 
-  const filteredProducts = selectedCategory === 'all' 
-    ? demoProducts.slice(0, 4)
-    : demoProducts.filter(p => p.developmentArea.includes(selectedCategory)).slice(0, 4);
+  const { data: apiResponse, isLoading } = useQuery({
+    queryKey: ["products-showcase"],
+    queryFn: () => api.get<{ data: any[] }>("/v1/products"),
+  });
+
+  const apiProducts = apiResponse?.data || [];
+
+  const products: Product[] = apiProducts.map(p => ({
+    id: p.id,
+    name: p.name,
+    price: p.price,
+    originalPrice: p.originalPrice,
+    image: p.thumbnailUrl,
+    description: p.description,
+    category: p.category,
+    ageRange: p.ageRange || "0-3 tuổi",
+    rating: p.rating,
+    reviewCount: p.reviewCount,
+    developmentArea: p.developmentAreas || [],
+    type: (p.productType as 'affiliate' | 'direct' | 'babyfirst') || 'babyfirst',
+    inStock: p.stockCount > 0,
+    affiliateUrl: p.affiliateUrl
+  }));
+
+  const filteredProducts = selectedCategory === 'all'
+    ? products.slice(0, 4)
+    : products.filter(p => p.developmentArea.includes(selectedCategory) || p.category === selectedCategory).slice(0, 4);
 
   return (
     <section className="section-padding bg-gradient-to-b from-background to-muted/30">
@@ -66,21 +93,31 @@ const ProductShowcase = () => {
         </motion.div>
 
         {/* Products grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          {filteredProducts.map((product, index) => (
-            <motion.div
-              key={product.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
-            >
-              <ProductCard
-                product={product}
-                onQuickView={setQuickViewProduct}
-              />
-            </motion.div>
-          ))}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 min-h-[400px]">
+          {isLoading ? (
+            <div className="col-span-full flex justify-center items-center">
+              <Loader2 className="w-10 h-10 animate-spin text-primary" />
+            </div>
+          ) : filteredProducts.length > 0 ? (
+            filteredProducts.map((product, index) => (
+              <motion.div
+                key={product.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <ProductCard
+                  product={product}
+                  onQuickView={setQuickViewProduct}
+                />
+              </motion.div>
+            ))
+          ) : (
+            <div className="col-span-full text-center py-12">
+              <p className="text-muted-foreground">Không tìm thấy sản phẩm nào</p>
+            </div>
+          )}
         </div>
 
         {/* View all */}
