@@ -9,11 +9,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace BabyFirst.Infrastructure.Data.Migrations.Postgres
+namespace BabyFirst.Infrastructure.Migrations.Postgres
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260128085034_AddBlogAndProductEntities")]
-    partial class AddBlogAndProductEntities
+    [Migration("20260202141349_AddProductsAndBlogPosts")]
+    partial class AddProductsAndBlogPosts
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
