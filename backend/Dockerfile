@@ -24,8 +24,8 @@ WORKDIR /app
 COPY --from=build /app/publish .
 
 # Environment variables
-ENV ASPNETCORE_URLS=http://+:80
+ENV ASPNETCORE_URLS=http://+:8080
 ENV ASPNETCORE_ENVIRONMENT=Development
 
-EXPOSE 80
+EXPOSE 8080
 ENTRYPOINT ["dotnet", "BabyFirst.Api.dll"]

@@ -99,29 +99,79 @@ app.UseAuthorization();
 app.MapControllers();
 
 // Log startup
+Console.WriteLine(">>> BabyFirst API starting up...");
 Log.Information("BabyFirst API starting up...");
 
 // Auto-migrate and seed database
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<ApplicationDbContext>();
+    
+    // 1. Wait for database connection
+    var iterations = 0;
+    var connected = false;
+    while (iterations < 15 && !connected)
+    {
+        try
+        {
+            // Try to open connection to verify it's ready
+            var canConnect = await context.Database.CanConnectAsync();
+            if (canConnect)
+            {
+                connected = true;
+                Console.WriteLine(">>> Database connection established.");
+                Log.Information("Database connection established.");
+            }
+            else
+            {
+                throw new Exception("CanConnect returned false");
+            }
+        }
+        catch (Exception ex)
+        {
+            iterations++;
+            Console.WriteLine($">>> Database connection attempt {iterations} failed. Retrying in 3s...");
+            await Task.Delay(3000);
+        }
+    }
+
+    if (!connected)
+    {
+        Console.WriteLine(">>> FATAL: Could not connect to database after multiple attempts.");
+        Log.Fatal("Could not connect to database after multiple attempts.");
+        return;
+    }
+
+    // 2. Perform Migrations
     try
     {
-        var context = services.GetRequiredService<ApplicationDbContext>();
+        var provider = context.Database.ProviderName;
+        Console.WriteLine($">>> Database provider: {provider}");
+        
         if (context.Database.IsSqlServer() || context.Database.IsNpgsql())
         {
+            Console.WriteLine(">>> Applying pending migrations...");
             await context.Database.MigrateAsync();
+            Console.WriteLine(">>> Migrations applied successfully.");
         }
 
+        // 3. Seed Data
         var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
         var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
-        await ApplicationDbContextSeed.SeedAsync(context, userManager, roleManager);
         
-        Log.Information("Database migrated and seeded successfully.");
+        Console.WriteLine(">>> Seeding database...");
+        await ApplicationDbContextSeed.SeedAsync(context, userManager, roleManager);
+        Console.WriteLine(">>> Seeding completed.");
+        
+        Console.WriteLine(">>> Database initialization completed successfully.");
+        Log.Information("Database initialization completed successfully.");
     }
     catch (Exception ex)
     {
-        Log.Error(ex, "An error occurred while migrating or seeding the database.");
+        Console.WriteLine($">>> FAIL: Database initialization error: {ex.Message}");
+        Log.Error(ex, "An error occurred during database migration or seeding.");
+        // We still run the app so logs can be inspected via API if needed
     }
 }
 

@@ -108,6 +108,29 @@ docker run --name babyfirst-db -e POSTGRES_PASSWORD=your_password -p 5432:5432 -
    ```
 4. Cập nhật database: `dotnet ef database update ...` (như bước trên).
 
+### 3. Khi Pull code mới có Migration:
+Nếu bạn pull code từ team member khác và thấy có migration mới trong `backend/src/BabyFirst.Infrastructure/Migrations/`, bạn **PHẢI** cập nhật database:
+
+#### 🐳 Nếu đang dùng Docker:
+```sh
+docker-compose down
+docker-compose up -d --build
+```
+Migrations sẽ tự động apply khi container khởi động.
+
+#### 💻 Nếu đang chạy Local:
+```sh
+cd backend
+dotnet ef database update --project src/BabyFirst.Infrastructure --startup-project src/BabyFirst.Api
+```
+
+#### 🔍 Kiểm tra migrations đã apply:
+```sh
+dotnet ef migrations list --project src/BabyFirst.Infrastructure --startup-project src/BabyFirst.Api
+```
+
+**Lưu ý:** Nếu gặp lỗi migration conflict, **KHÔNG** tự ý xóa database. Hãy liên hệ Lead team!
+
 ---
 
 ## ❓ Xử lý lỗi thường gặp (Troubleshooting)

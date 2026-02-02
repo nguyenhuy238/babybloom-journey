@@ -5,7 +5,7 @@ services:
     environment:
       POSTGRES_DB: BabyFirstDb
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: your_password
+      POSTGRES_PASSWORD: huycho123
     ports:
       - "5433:5432"
     volumes:
@@ -23,7 +23,7 @@ services:
       - Jwt__Issuer=${Jwt__Issuer:-BabyFirst}
       - Jwt__Audience=${Jwt__Audience:-BabyFirstApp}
     ports:
-      - "5000:80"
+      - "5000:8080"
     depends_on:
       - db
 
@@ -31,6 +31,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=http://localhost:5000/api
     container_name: babyfirst-web
     ports:
       - "3000:80"
